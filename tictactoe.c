@@ -70,7 +70,7 @@ int main()
         menuOption = 0;
 
         // prompt user for game they wish to play
-        printf("Welcome to TicTacToe.\n1---person vs person\n2---person vs random computer\nEnter your choice 1 or 2\n");
+        printf("Welcome to TicTacToe.\n1---person vs person\n2---person vs computer\nEnter your choice 1 or 2\n");
 
         // read information from console and keeps asking until valid input
         scanf("%d", &menuOption);
