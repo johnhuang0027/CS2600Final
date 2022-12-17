@@ -1,0 +1,11 @@
+[Unit]
+Description=Automates AI Moves on startup
+
+[Service]
+Type = simple
+User = John
+ExecStart = Documents/Github/CS2600Final/tictactoe.sh
+Restart = on-failure
+
+[Install]
+WantedBy=default.target
