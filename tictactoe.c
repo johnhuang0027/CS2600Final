@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include "MQTTClient.h"
+volatile MQTTClient_deliveryToken deliveredtoken;
 
 void startBoard();
 bool draw(int count);
