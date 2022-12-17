@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include "MQTTClient.h"
 
 void startBoard();
 bool draw(int count);
@@ -17,6 +18,41 @@ int movesMade=0;
 
 //Tic Tac Toe game between 2 players or player vs computer
 int main(){
+
+    MQTTClient client;
+    MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
+    MQTTClient_message pubmsg = MQTTClient_message_initializer;
+    MQTTClient_deliveryToken token;
+
+    int rc;
+    int ch;
+
+    MQTTClient_create(&client, ADDRESS, CLIENTID,
+        MQTTCLIENT_PERSISTENCE_NONE, NULL);
+    conn_opts.keepAliveInterval = 20;
+    conn_opts.cleansession = 1;
+    MQTTClient_setCallbacks(client, NULL, connlost, msgarrvd, delivered);
+    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
+    {
+        printf("Failed to connect, return code %d\n", rc);
+        exit(EXIT_FAILURE);
+    }
+
+    pubmsg.payload = PAYLOAD;
+    pubmsg.payloadlen = strlen(PAYLOAD);
+    pubmsg.qos = QOS;
+    pubmsg.retained = 0;
+
+    MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token);
+    // printf("Waiting for up to %d seconds for publication of %s\n"
+    //         "on topic %s for client with ClientID: %s\n",
+    //         (int)(TIMEOUT/1000), PAYLOAD, TOPIC, CLIENTID);
+    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+    // printf("Message with delivery token %d delivered\n", token);
+
+    printf("Subscribing to topic %s\nfor client %s using QoS%d\n\n"
+           "Press Q<Enter> to quit\n\n", TOPIC, CLIENTID, QOS);
+    MQTTClient_subscribe(client, TOPIC, QOS);
 
     int menuOption;
     time_t t;
