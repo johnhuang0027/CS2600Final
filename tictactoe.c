@@ -233,6 +233,14 @@ int main()
         }
         printf("\nWould you like to play again?\n1. Yes\n2. No\n");
         scanf("%d", &playAgain);
+        pubmsg.payload = input;
+        pubmsg.payloadlen = strlen(input);
+        pubmsg.qos = QOS;
+        pubmsg.retained = 0;
+
+        MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token);
+        rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
+
     } while (playAgain == 1);
 
     return 0;
